@@ -1,0 +1,17 @@
+import express from "express";
+import cors from "cors";
+import todoRoutes from "./routes/todo.routes.js";
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+    res.send("API Server is running");
+});
+
+// Todo routes
+app.use("/todos", todoRoutes);
+
+export default app;
