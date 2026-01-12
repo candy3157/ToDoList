@@ -40,3 +40,26 @@ export const toggleTodo = async (id, completed) => {
 
     return res.json();
 };
+
+export const updateTodo = async (id, title) => {
+    const res = await fetch(`${BASE_URL}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+    });
+
+    if (!res.ok) {
+        throw new Error("Failed to update todo");
+    }
+
+    return res.json();
+};
+
+export const deleteCompletedTodos = async () => {
+    const res = await fetch(`${BASE_URL}/completed`, {
+        method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Failed to delete completed todos");
+    return res.json();
+};

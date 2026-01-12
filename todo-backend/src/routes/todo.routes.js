@@ -50,11 +50,14 @@ router.get("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
     try {
         const id = Number(req.params.id);
-        const { completed } = req.body;
+        const { title, completed } = req.body;
 
         const updatedTodo = await prisma.todo.update({
             where: { id },
-            data: { completed },
+            data: {
+                ...(title !== undefined && { title }),
+                ...(completed !== undefined && { completed }),
+            },
         });
 
         res.json(updatedTodo);
@@ -64,10 +67,6 @@ router.patch("/:id", async (req, res) => {
     }
 });
 
-/**
- * DELETE Todo
- * DELETE /todos/:id
- */
 /**
  * DELETE Todo
  * DELETE /todos/:id
@@ -93,6 +92,19 @@ router.delete("/:id", async (req, res) => {
             message: error.message,
             code: error.code,
         });
+    }
+});
+// DELETE /todos/completed
+router.delete("/completed", async (req, res) => {
+    try {
+        const result = await prisma.todo.deleteMany({
+            where: { completed: true },
+        });
+
+        res.json({ deletedCount: result.count });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to delete completed todos" });
     }
 });
 
